@@ -47,6 +47,23 @@ export function addTodo({text, token}) {
         });
 }
 
+export function registerUser({login, password, name}) {
+  return fetch("https://webdev-hw-api.vercel.app/api/user", {
+      method: "POST",
+      body: JSON.stringify({
+        login,
+        password,
+        name,
+      }),
+    })
+      .then((response) => {
+        if(response.status === 400) {
+          throw new Error('Такой пользователь уже существует');
+        }
+        return response.json();
+      });
+}
+
 export function loginUser({login, password}) {
   return fetch("https://webdev-hw-api.vercel.app/api/user/login", {
       method: "POST",
@@ -62,3 +79,4 @@ export function loginUser({login, password}) {
         return response.json();
       });
 }
+
