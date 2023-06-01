@@ -1,74 +1,29 @@
 //План
 //1. Реализовать форму логина в приложении
 //* перенести всю разметку в рендер-функцию (+)
-//* сделать форму входа динамической
+//* сделать форму входа динамической (+)
+//* отрефакторить приложение на модули
+//  *API (+)
+//  *... TODO
 // 2. Реализовать форму регистрации
 
+import { addTodo, deleteTodo, getTodos } from "./api.js";
 
 //https://github.com/GlebkaF/webdev-hw-api/blob/main/pages/api/v2/todos/README.md  - документация по конкретному api
 
 let tasks = [];
 
-//аторизация с паролем
-// let password = prompt('Ввести пароль'); //просим пользователя ввести пароль. должен быть 123456 согласно документации к конкретному api
-
-// const host = 'https://webdev-hw-api.vercel.app/api/v2/todos'; //выносим адрес api в переменную
-
-// const fetchTodosAndRender = () => {
-//   return fetch(host, {
-//     method: "GET",
-//     headers: {
-//         Authorization: password, //согласно документации к конкретному api без авторизации запросы не работают и возвращаюд код 401. Указываем нужный ключ к авторизации в переменной password
-//     }
-//   })
-//     .then((response) => {
-
-//         if(response.status === 401) { //если пароль не верный то просим пользователя ввести его снова
-//             password = prompt('введите верный пароль');
-//             fetchTodosAndRender();
-//             throw new Error('Нет авторизации');
-//         }
-
-//       return response.json();
-//     })
-//     .then((responseData) => {
-//       tasks = responseData.todos;
-//       renderApp();
-//     });
-// };
-//
-
-
-//авторизация через токен bearer
-let token = 'Bearer asb4c4boc86gasb4c4boc86g37w3cc3bo3b83k4g37k3bk3cg3c03ck4k'; //токен генерируется с insomnia через апи указанный в документации к апи в графе авторизации
+let token = 'Bearer asb4c4boc86gasb4c4boc86g37w3cc3bo3b83k4g37k3bk3cg3c03ck4k';
 
 token = null;
 
-const host = 'https://webdev-hw-api.vercel.app/api/v2/todos'; //выносим адрес api в переменную
-
 const fetchTodosAndRender = () => {
-  return fetch(host, {
-    method: "GET",
-    headers: {
-        Authorization: token, 
-    }
-  })
-    .then((response) => {
-
-        if(response.status === 401) { //если пароль не верный то просим пользователя ввести его снова
-            // password = prompt('введите верный пароль');
-            // fetchTodosAndRender();
-            throw new Error('Нет авторизации');
-        }
-
-      return response.json();
-    })
+  return getTodos({token})
     .then((responseData) => {
       tasks = responseData.todos;
       renderApp();
     });
 };
-//
 
 
 const renderApp = () => {
@@ -144,8 +99,6 @@ const renderApp = () => {
     <button class="button" id="add-button">Добавить</button>
   </div>`;
 
-
-
   appEl.innerHTML = appHtml;
 
   const buttonElement = document.getElementById("add-button");
@@ -159,16 +112,7 @@ const renderApp = () => {
 
       const id = deleteButton.dataset.id;
 
-      // Подписываемся на успешное завершение запроса с помощью then
-      fetch("https://webdev-hw-api.vercel.app/api/todos/" + id, {
-        method: "DELETE",
-        headers: {
-            Authorization: token,
-        },
-      })
-        .then((response) => {
-          return response.json();
-        })
+        deleteTodo({id, token})
         .then((responseData) => {
           // Получили данные и рендерим их в приложении
           tasks = responseData.todos;
@@ -186,17 +130,9 @@ const renderApp = () => {
     buttonElement.textContent = "Задача добавляется...";
   
     // Подписываемся на успешное завершение запроса с помощью then
-    fetch(host, {
-      method: "POST",
-      body: JSON.stringify({
+      addTodo({
         text: textInputElement.value,
-      }),
-      headers: {
-          Authorization: token,
-      }
-    })
-      .then((response) => {
-        return response.json();
+        token,
       })
       .then(() => {
         // TODO: кинуть исключение
@@ -217,6 +153,5 @@ const renderApp = () => {
       });
   });
 };
-// fetchTodosAndRender();
 renderApp();
 
