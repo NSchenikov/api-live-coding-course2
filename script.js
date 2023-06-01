@@ -1,3 +1,7 @@
+//План
+//1. Реализовать форму логина в приложении
+// 2. Реализовать форму регистрации
+
 const buttonElement = document.getElementById("add-button");
 const listElement = document.getElementById("list");
 const textInputElement = document.getElementById("text-input");
