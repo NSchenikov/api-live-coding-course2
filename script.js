@@ -10,6 +10,7 @@
 
 import { addTodo, deleteTodo, getTodos } from "./api.js";
 import { renderLoginComponent } from "./components/login-component.js";
+import { formatDateToRu, formatDateToUs } from "./lib/formatDate/formatDate.js";
 
 //https://github.com/GlebkaF/webdev-hw-api/blob/main/pages/api/v2/todos/README.md  - документация по конкретному api
 
@@ -43,11 +44,7 @@ const renderApp = () => {
     return;
   }
 
-  const formatDate = (date) => { //функция которая преобразовываает дату
-    return `${date.getDate() < 10 ? '0' + date.getDate() : date.getDate()}/${date.getMonth() < 10 ? '0' + date.getMonth() : date.getMonth()}/${date.getFullYear()} ${date.getHours() < 10 ? '0' + date.getHours() : date.getHours()}:${date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()}`;
-  };
-
-
+  const country = "en";
   const tasksHtml = tasks
   .map((task) => {
     return `
@@ -56,7 +53,7 @@ const renderApp = () => {
         ${task.text} (Cоздал: ${task.user?.name ?? 'Неизвестно'})
         <button data-id="${task.id}" class="button delete-button">Удалить</button>
       </p>
-                    <p> <i>Задача создана: ${formatDate(new Date(task.created_at))}</i> </p>
+        <p> <i>Задача создана: ${country === "ru" ? formatDateToRu(new Date(task.created_at)) : formatDateToUs(new Date(task.created_at))}</i> </p>
     </li>`;
   })
   .join("");
