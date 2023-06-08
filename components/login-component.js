@@ -1,4 +1,5 @@
 import { loginUser, registerUser } from "../api.js";
+import _ from 'lodash';
 
 export function renderLoginComponent({ appEl, setToken, fetchTodosAndRender }) {
 
@@ -90,17 +91,18 @@ export function renderLoginComponent({ appEl, setToken, fetchTodosAndRender }) {
             }
     
             registerUser({
-                login: login,
-                password: password,
-                name: name,
-            }).then((user) => {
-    
+              login: login,
+              password: password,
+              name: _.capitalize(name),
+            })
+              .then((user) => {
                 setToken(`Bearer ${user.user.token}`);
                 fetchTodosAndRender();
-            }).catch(error => {
-                //TODO: Выводить алерт красиво
+              })
+              .catch((error) => {
+                // TODO: Выводить алерт красиво
                 alert(error.message);
-            });
+              });
           };
 
        });
