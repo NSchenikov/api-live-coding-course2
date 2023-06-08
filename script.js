@@ -43,6 +43,10 @@ const renderApp = () => {
     return;
   }
 
+  const formatDate = (date) => { //функция которая преобразовываает дату
+    return `${date.getDate() < 10 ? '0' + date.getDate() : date.getDate()}/${date.getMonth() < 10 ? '0' + date.getMonth() : date.getMonth()}/${date.getFullYear()} ${date.getHours() < 10 ? '0' + date.getHours() : date.getHours()}:${date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()}`;
+  };
+
 
   const tasksHtml = tasks
   .map((task) => {
@@ -52,6 +56,7 @@ const renderApp = () => {
         ${task.text} (Cоздал: ${task.user?.name ?? 'Неизвестно'})
         <button data-id="${task.id}" class="button delete-button">Удалить</button>
       </p>
+                    <p> <i>Задача создана: ${formatDate(new Date(task.created_at))}</i> </p>
     </li>`;
   })
   .join("");
