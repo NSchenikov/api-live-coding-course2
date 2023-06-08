@@ -11,6 +11,7 @@
 import { addTodo, deleteTodo, getTodos } from "./api.js";
 import { renderLoginComponent } from "./components/login-component.js";
 import { formatDateToRu, formatDateToUs } from "./lib/formatDate/formatDate.js";
+import { format } from "date-fns"; //https://date-fns.org/v2.30.0/docs/format
 
 //https://github.com/GlebkaF/webdev-hw-api/blob/main/pages/api/v2/todos/README.md  - документация по конкретному api
 
@@ -44,17 +45,24 @@ const renderApp = () => {
     return;
   }
 
-  const country = "en";
   const tasksHtml = tasks
   .map((task) => {
+		// Вызываем функцию format из date-fns, первый параметр — это дата, которую
+		// хотим отформатировать, второй параметр — это строка: к какому формату
+		// желаем привести дату. Обратите внимание MM — это номер месяца,
+		// mm — это минуты
+    const now = new Date(); 
+    const createDate = format(now, 'MM-dd-yyyy hh:mm'); //здесь можно поменять формат даты
     return `
-    <li class="task">
-      <p class="task-text">
-        ${task.text} (Cоздал: ${task.user?.name ?? 'Неизвестно'})
-        <button data-id="${task.id}" class="button delete-button">Удалить</button>
-      </p>
-        <p> <i>Задача создана: ${country === "ru" ? formatDateToRu(new Date(task.created_at)) : formatDateToUs(new Date(task.created_at))}</i> </p>
-    </li>`;
+        <li class="task">
+          <p class="task-text">
+            ${task.text} (Создал: ${task.user?.name ?? "Неизвестно"})
+            <button data-id="${
+              task.id
+            }" class="button delete-button">Удалить</button>
+          </p>
+          <p><i>Задача создана: ${createDate}</i></p>
+        </li>`;
   })
   .join("");
 
